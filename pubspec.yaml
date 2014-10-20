@@ -1,0 +1,9 @@
+name: script
+version: 1.0.0
+description: Scripting Plugin for PolymorphicBot
+dependencies:
+  polymorphic_bot:
+    git: git://github.com/PolymorphicBot/PolymorphicBot.git
+  crypto: any
+plugin:
+  main: script.dart
