@@ -8,77 +8,80 @@ import "package:polymorphic_bot/api.dart";
 BotConnector bot;
 EventManager eventManager;
 
-void main(List<String> args, port) {
+void main(List < String > args, port) {
   print("[Script] Loading Plugin");
   bot = new BotConnector(port);
   eventManager = bot.createEventManager();
-  
+
   eventManager.command("eval", (event) {
-    File file = new File("/tmp/script${new Random().nextInt(4000)}.dart");
-    
-    if (file.existsSync()) {
-      file.deleteSync();
-    }
-    
-    List<String> imports = [
-      "dart:async",
-      "dart:io",
-      "dart:convert",
-      "dart:math",
-      "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"
-    ];
-    
-    String code = imports.map((it) => "import '${it}';").join("\n") + "\nvoid main() {" + event.args.join(" ") + "}";
-    
-    file.writeAsStringSync(code);
-    
-    var path = file.absolute.path;
-    
-    Process.start("dart", [path]).then((proc) {
-      proc.stdout.transform(UTF8.decoder).listen((data) {
-        event.reply("> ${data}");
-      });
-      
-      proc.stderr.transform(UTF8.decoder).listen((data) {
-        event.replyNotice("> ${data}");
-      });
-      
-      new Timer(new Duration(seconds: 5), () {
-        if (proc.kill()) {
-          event.reply("> Script was killed (over 5 seconds of execution time)");
-        }
-        
+    event.require("eval", () {
+      File file = new File("/tmp/script${new Random().nextInt(4000)}.dart");
+
+      if (file.existsSync()) {
         file.deleteSync();
+      }
+
+      List < String > imports = [
+        "dart:async",
+        "dart:io",
+        "dart:convert",
+        "dart:math",
+        "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"
+      ];
+
+      String code = imports.map((it) => "import '${it}';").join("\n") + "\nvoid main() {" + event.args.join(" ") + "}";
+
+      file.writeAsStringSync(code);
+
+      var path = file.absolute.path;
+
+      Process.start("dart", [path]).then((proc) {
+        proc.stdout.transform(UTF8.decoder).listen((data) {
+          event.reply("> ${data}");
+        });
+
+        proc.stderr.transform(UTF8.decoder).listen((data) {
+          event.replyNotice("> ${data}");
+        });
+
+        new Timer(new Duration(seconds: 5), () {
+          if (proc.kill()) {
+            event.reply("> Script was killed (over 5 seconds of execution time)");
+          }
+
+          file.deleteSync();
+        });
       });
     });
   });
-  
+
   eventManager.command("js-eval", (event) {
-    File file = new File("/tmp/script${new Random().nextInt(4000)}.js");
-    
-    file.writeAsStringSync(event.args.join(" "));
-    
-    var path = file.absolute.path;
-    
-    Process.start("node", [path]).then((proc) {
-      proc.stdout.transform(UTF8.decoder).listen((data) {
-        event.reply("> ${data}");
-      });
-      
-      proc.stderr.transform(UTF8.decoder).listen((data) {
-        event.replyNotice("> ${data}");
-      });
-      
-      new Timer(new Duration(seconds: 5), () {
-        if (proc.kill()) {
-          event.reply("> Script was killed (over 5 seconds of execution time)");
-        }
-        
-        file.deleteSync();
+    event.require("js-eval", () {
+      File file = new File("/tmp/script${new Random().nextInt(4000)}.js");
+
+      file.writeAsStringSync(event.args.join(" "));
+
+      var path = file.absolute.path;
+
+      Process.start("node", [path]).then((proc) {
+        proc.stdout.transform(UTF8.decoder).listen((data) {
+          event.reply("> ${data}");
+        });
+
+        proc.stderr.transform(UTF8.decoder).listen((data) {
+          event.replyNotice("> ${data}");
+        });
+
+        new Timer(new Duration(seconds: 5), () {
+          if (proc.kill()) {
+            event.reply("> Script was killed (over 5 seconds of execution time)");
+          }
+
+          file.deleteSync();
+        });
       });
     });
   });
-  
-  eventManager.onShutdown(() {
-  });
+
+  eventManager.onShutdown(() {});
 }
