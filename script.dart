@@ -53,6 +53,32 @@ void main(List<String> args, port) {
     });
   });
   
+  eventManager.command("js-eval", (event) {
+    File file = new File("/tmp/script${new Random().nextInt(4000)}.js");
+    
+    file.writeAsStringSync(event.args.join(" "));
+    
+    var path = file.absolute.path;
+    
+    Process.start("node", [path]).then((proc) {
+      proc.stdout.transform(UTF8.decoder).listen((data) {
+        event.reply("> ${data}");
+      });
+      
+      proc.stderr.transform(UTF8.decoder).listen((data) {
+        event.replyNotice("> ${data}");
+      });
+      
+      new Timer(new Duration(seconds: 5), () {
+        if (proc.kill()) {
+          event.reply("> Script was killed (over 5 seconds of execution time)");
+        }
+        
+        file.deleteSync();
+      });
+    });
+  });
+  
   eventManager.onShutdown(() {
   });
 }
