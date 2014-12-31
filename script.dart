@@ -6,14 +6,12 @@ import "dart:io";
 import "package:polymorphic_bot/api.dart";
 
 BotConnector bot;
-EventManager eventManager;
 
-void main(List < String > args, port) {
+void main(List<String> args, Plugin plugin) {
   print("[Script] Loading Plugin");
-  bot = new BotConnector(port);
-  eventManager = bot.createEventManager();
+  bot = plugin.getBot();
 
-  eventManager.command("eval", (event) {
+  bot.command("eval", (event) {
     event.require("eval", () {
       File file = new File("/tmp/script${new Random().nextInt(4000)}.dart");
 
@@ -21,7 +19,7 @@ void main(List < String > args, port) {
         file.deleteSync();
       }
 
-      List < String > imports = [
+      List<String> imports = [
         "dart:async",
         "dart:io",
         "dart:convert",
@@ -55,7 +53,7 @@ void main(List < String > args, port) {
     });
   });
 
-  eventManager.command("js-eval", (event) {
+  bot.command("js-eval", (event) {
     event.require("js-eval", () {
       File file = new File("/tmp/script${new Random().nextInt(4000)}.js");
 
@@ -82,6 +80,4 @@ void main(List < String > args, port) {
       });
     });
   });
-
-  eventManager.onShutdown(() {});
 }
