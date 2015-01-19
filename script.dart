@@ -67,7 +67,7 @@ void main(List<String> args, Plugin plugin) {
     var cmd = whichSync("dart", orElse: () => "${Platform.environment["HOME"]}/Development/Tools/dart/bleeding_edge/sdk/bin/dart");
     var sdkDir = new File(cmd).parent.parent;
     
-    if (sdkDir.path.startsWith("/usr/lib")) {
+    if (sdkDir.path.startsWith("/usr")) {
       sdkDir = new Directory("/opt/dart-sdk");
     }
 
