@@ -6,5 +6,6 @@ dependencies:
     git: git://github.com/PolymorphicBot/PolymorphicBot.git
   compiler_unsupported:
     git: https://github.com/dart-lang/compiler_unsupported.git
+  which: any
 plugin:
   main: script.dart

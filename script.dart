@@ -3,6 +3,7 @@ import "dart:math";
 import "dart:convert";
 import "dart:io";
 
+import "package:which/which.dart";
 import "package:polymorphic_bot/api.dart";
 import "package:compiler_unsupported/src/dart2js.dart";
 
@@ -62,7 +63,10 @@ void main(List<String> args, Plugin plugin) {
     });
   }, permission: "eval");
   
-  bot.command("eval-dart2js", (event) {
+  bot.command("eval-dart2js", (event) {    
+    var cmd = whichSync("dart", orElse: () => "${Platform.environment["HOME"]}/Development/Tools/dart/bleeding_edge/sdk/bin/dart");
+    var sdkDir = new File(cmd).parent.parent;
+
     File file = new File("/tmp/script${new Random().nextInt(4000)}.dart");
 
     if (file.existsSync()) {
@@ -97,7 +101,7 @@ void main(List<String> args, Plugin plugin) {
     
     file.writeAsStringSync(code);
     
-    compilerMain(["--categories=Server", "-o", out.path, file.path]).then((result) {
+    compilerMain(["--categories=Server", "--library-root=${sdkDir.path}", "-o", out.path, file.path]).then((result) {
       if (!result.isSuccess) {
         event.reply("> Compilation Failed!");
         file.deleteSync();
@@ -129,7 +133,13 @@ void main(List<String> args, Plugin plugin) {
         file.deleteSync();
         tmpDir.deleteSync(recursive: true);
       });
-    });;
+    }).catchError((e) {
+      print(e);
+      event.reply("> Compilation Failed! Check Bot Console.");
+      
+      file.deleteSync();
+      tmpDir.deleteSync(recursive: true);
+    });
   }, permission: "eval-dart2js");
 
   bot.command("js-eval", (event) {
