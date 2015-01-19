@@ -66,6 +66,10 @@ void main(List<String> args, Plugin plugin) {
   bot.command("eval-dart2js", (event) {    
     var cmd = whichSync("dart", orElse: () => "${Platform.environment["HOME"]}/Development/Tools/dart/bleeding_edge/sdk/bin/dart");
     var sdkDir = new File(cmd).parent.parent;
+    
+    if (sdkDir.path.startsWith("/usr/lib")) {
+      sdkDir = new Directory("/opt/dart-sdk");
+    }
 
     File file = new File("/tmp/script${new Random().nextInt(4000)}.dart");
 
