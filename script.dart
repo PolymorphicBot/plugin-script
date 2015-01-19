@@ -84,6 +84,7 @@ void main(List<String> args, Plugin plugin) {
       "dart:math",
       "dart:mirrors",
       "dart:typed_data",
+      "dart:js as js",
       "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"
     ];
     
