@@ -106,7 +106,7 @@ void main(List<String> args, Plugin plugin) {
     
     file.writeAsStringSync(code);
     
-    compilerMain(["--categories=Server", "--enable-experimental-mirrors", "--library-root=${sdkDir.path}", "-o", out.path, file.path]).then((result) {
+    compilerMain(["--categories=all", "--enable-experimental-mirrors", "--library-root=${sdkDir.path}", "-o", out.path, file.path]).then((result) {
       if (!result.isSuccess) {
         event.reply("> Compilation Failed!");
         file.deleteSync();
