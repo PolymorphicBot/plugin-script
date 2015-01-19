@@ -27,8 +27,16 @@ void main(List<String> args, Plugin plugin) {
       "dart:typed_data",
       "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"
     ];
-
-    String code = imports.map((it) => "import '${it}';").join("\n") + "\nvoid main() {" + event.args.join(" ") + "}";
+    
+    var input = event.args.join(" ");
+    String code;
+    
+    if (input.length > 1 && input[0] == "@") {
+      input = input.substring(1);
+      code = input;
+    } else {
+      code = imports.map((it) => "import '${it}';").join("\n") + "\nvoid main() {" + event.args.join(" ") + "}";
+    }
 
     file.writeAsStringSync(code);
 
