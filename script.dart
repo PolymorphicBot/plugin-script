@@ -18,7 +18,15 @@ void main(List<String> args, Plugin plugin) {
       file.deleteSync();
     }
 
-    List<String> imports = ["dart:async", "dart:io", "dart:convert", "dart:math", "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"];
+    List<String> imports = [
+      "dart:async",
+      "dart:io",
+      "dart:convert",
+      "dart:math",
+      "dart:mirrors",
+      "dart:typed_data",
+      "https://gist.githubusercontent.com/kaendfinger/03a43678776d9a906e88/raw/functions.dart"
+    ];
 
     String code = imports.map((it) => "import '${it}';").join("\n") + "\nvoid main() {" + event.args.join(" ") + "}";
 
@@ -27,11 +35,11 @@ void main(List<String> args, Plugin plugin) {
     var path = file.absolute.path;
 
     Process.start("dart", [path]).then((proc) {
-      proc.stdout.transform(UTF8.decoder).listen((data) {
+      proc.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((data) {
         event.reply("> ${data}");
       });
 
-      proc.stderr.transform(UTF8.decoder).listen((data) {
+      proc.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((data) {
         event.replyNotice("> ${data}");
       });
 
@@ -53,11 +61,11 @@ void main(List<String> args, Plugin plugin) {
     var path = file.absolute.path;
 
     Process.start("node", [path]).then((proc) {
-      proc.stdout.transform(UTF8.decoder).listen((data) {
+      proc.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((data) {
         event.reply("> ${data}");
       });
 
-      proc.stderr.transform(UTF8.decoder).listen((data) {
+      proc.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((data) {
         event.replyNotice("> ${data}");
       });
 
