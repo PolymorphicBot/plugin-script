@@ -4,5 +4,7 @@ description: Scripting Plugin for PolymorphicBot
 dependencies:
   polymorphic_bot:
     git: git://github.com/PolymorphicBot/PolymorphicBot.git
+  compiler_unsupported:
+    git: https://github.com/dart-lang/compiler_unsupported.git
 plugin:
   main: script.dart
