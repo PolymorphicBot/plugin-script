@@ -9,7 +9,9 @@ import "package:compiler_unsupported/src/dart2js.dart";
 
 BotConnector bot;
 
-void main(List<String> args, Plugin plugin) {
+void main(List<String> args, port) {
+  var plugin = polymorphic(args, port);
+  
   print("[Script] Loading Plugin");
   bot = plugin.getBot();
 
